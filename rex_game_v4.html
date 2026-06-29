@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>REX Quest — Form-Edit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2744;--gold:#c8922a;--goldb:#fef3c7;
+  --green:#1a7c4a;--greenb:#d6f5e6;
+  --red:#c0392b;--redb:#fdecea;
+  --bg:#f4f6fb;--white:#fff;
+  --ink:#1a2744;--ink2:#5a6278;--border:#dde3f0;--r:14px;
+}
+*{-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);font-family:'Space Grotesk',sans-serif;color:var(--ink)}
+body{display:flex;flex-direction:column;align-items:center;padding-bottom:60px}
+
+/* ── HEADER ── */
+.hdr{width:100%;max-width:520px;background:var(--navy);padding:14px 20px;display:flex;align-items:center;gap:12px}
+.hdr-ico{font-size:20px}
+.hdr-info{flex:1}
+.hdr-title{font-size:14px;font-weight:700;color:#fff}
+.hdr-sub{font-size:10px;color:#8fa3c8;margin-top:1px}
+.hdr-right{text-align:right}
+.hdr-pts{font-size:22px;font-weight:700;color:var(--gold)}
+.hdr-lbl{font-size:10px;color:#8fa3c8}
+
+/* ── ÉCRANS ── */
+.screen{display:none;width:100%;max-width:520px}
+.screen.active{display:block}
+
+/* ── ACCUEIL ── */
+.hero{background:var(--navy);border-radius:0 0 28px 28px;padding:32px 22px 26px;text-align:center;margin-bottom:16px}
+.hero-badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.hero-title{font-size:32px;font-weight:700;color:#fff;line-height:1.1;margin-bottom:8px}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:13px;color:#8fa3c8;line-height:1.65;margin-bottom:20px}
+.hero-stats{display:flex;justify-content:center;gap:28px;margin-bottom:22px}
+.hstat-n{font-size:28px;font-weight:700;color:var(--gold);line-height:1}
+.hstat-l{font-size:11px;color:#8fa3c8;margin-top:2px}
+.btn-primary{width:100%;background:var(--gold);color:var(--navy);border:none;border-radius:12px;padding:15px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;cursor:pointer}
+
+/* ── QR BLOC ── */
+.qr-bloc{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:18px;text-align:center;margin:0 16px 12px}
+.qr-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);margin-bottom:12px}
+.qr-img{width:150px;height:150px;image-rendering:pixelated;border-radius:8px;border:3px solid var(--navy);display:block;margin:0 auto 10px}
+.qr-url{font-size:12px;color:var(--navy);font-weight:600;margin-bottom:4px}
+.qr-note{font-size:11px;color:var(--ink2)}
+
+/* ── HOW TO PLAY ── */
+.how{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:16px;margin:0 16px 16px}
+.how-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.how-row:last-child{margin-bottom:0}
+.how-ico{font-size:20px;flex-shrink:0;margin-top:1px}
+.how-title{font-size:13px;font-weight:600}
+.how-txt{font-size:12px;color:var(--ink2);margin-top:1px}
+
+/* ── QUIZ ── */
+.quiz-top{padding:16px 16px 0}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.quiz-badge{background:var(--navy);color:var(--gold);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px}
+.quiz-prog{font-size:12px;color:var(--ink2);font-weight:600}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;margin-bottom:12px;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .35s}
+.dots-row{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;padding:0 16px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .2s}
+.dot.ok{background:var(--green)}.dot.ko{background:var(--red)}.dot.cur{background:var(--gold)}
+.timer-row{display:flex;align-items:center;gap:8px;padding:0 16px;margin-bottom:10px}
+.timer-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.timer-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .1s linear}
+.timer-txt{font-size:12px;font-weight:700;color:var(--gold);min-width:24px;text-align:right}
+.q-card{background:var(--white);border-radius:var(--r);border:2px solid var(--border);padding:18px 16px;margin:0 16px 10px}
+.q-metier{font-size:11px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.q-text{font-size:15px;font-weight:600;line-height:1.5;color:var(--ink);margin-bottom:14px}
+.q-opts{display:flex;flex-direction:column;gap:7px}
+.opt-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer;line-height:1.4;transition:border-color .12s,background .12s;-webkit-appearance:none}
+.opt-btn:active:not(:disabled){background:#fff;border-color:var(--navy)}
+.opt-btn.correct{background:var(--greenb)!important;border-color:var(--green)!important;color:var(--green)!important;pointer-events:none}
+.opt-btn.wrong{background:var(--redb)!important;border-color:var(--red)!important;color:var(--red)!important;pointer-events:none}
+.opt-btn.reveal{background:var(--greenb)!important;border-color:var(--green)!important;color:var(--green)!important;pointer-events:none}
+.opt-btn:disabled{pointer-events:none;opacity:.55}
+.feedback{background:var(--bg);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13px;color:var(--ink2);line-height:1.6;margin:0 16px 8px;display:none}
+.feedback.show{display:block}
+.next-wrap{padding:0 16px 16px}
+.next-btn{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;cursor:pointer;width:100%;display:none}
+.next-btn.show{display:block}
+
+/* ── QUESTION FINALE ── */
+.finale-hero{background:var(--navy);border-radius:0 0 24px 24px;padding:28px 20px 22px;text-align:center;margin-bottom:14px}
+.finale-hero h2{font-size:22px;font-weight:700;color:#fff;margin-bottom:6px}
+.finale-hero p{font-size:14px;color:#fff;font-weight:600;line-height:1.5}
+.finale-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px;margin-bottom:10px}
+.fo-btn{background:var(--white);border:2px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;line-height:1.3;-webkit-appearance:none}
+.fo-btn:active:not(:disabled){border-color:var(--navy)}
+.fo-btn.ok{background:var(--greenb)!important;border-color:var(--green)!important;color:var(--green)!important;pointer-events:none}
+.fo-btn.ko{background:var(--redb)!important;border-color:var(--red)!important;color:var(--red)!important;pointer-events:none}
+.fo-btn:disabled{pointer-events:none;opacity:.5}
+.finale-expl{background:var(--goldb);border-radius:var(--r);padding:14px 16px;margin:0 16px 14px;display:none}
+.finale-expl.show{display:block}
+.finale-expl-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.finale-expl-txt{font-size:13px;color:var(--ink2);line-height:1.65;margin-bottom:12px}
+
+/* ── RÉSULTAT FINAL ── */
+.podium-hero{background:var(--navy);border-radius:0 0 28px 28px;padding:28px 20px 20px;text-align:center;margin-bottom:16px}
+.podium-hero h2{font-size:24px;font-weight:700;color:#fff;margin-bottom:4px}
+.podium-hero p{font-size:12px;color:#8fa3c8}
+.score-ring{width:90px;height:90px;border-radius:50%;background:rgba(200,146,42,.15);border:3px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:16px auto 8px}
+.score-n{font-size:30px;font-weight:700;color:var(--gold);line-height:1}
+.score-lbl{font-size:11px;color:#8fa3c8}
+.score-title{font-size:20px;font-weight:700;color:#fff;margin-bottom:4px}
+.score-sub{font-size:12px;color:#8fa3c8;line-height:1.5}
+.recap{padding:0 16px}
+.recap-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:14px;margin-bottom:10px}
+.recap-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.recap-row:last-child{border-bottom:none}
+.recap-ico{font-size:18px;flex-shrink:0}
+.recap-name{flex:1;font-size:13px;font-weight:600}
+.recap-dots{display:flex;gap:4px}
+.rdot{width:8px;height:8px;border-radius:50%}
+.rdot.ok{background:var(--green)}.rdot.ko{background:var(--red)}.rdot.skip{background:var(--border)}
+.recap-pts{font-size:13px;font-weight:700;color:var(--gold)}
+.msg-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:14px;margin-bottom:12px}
+.msg-card p{font-size:13px;color:var(--ink);line-height:1.65}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;border-radius:12px;padding:9px 18px;font-size:13px;font-weight:600;opacity:0;transition:opacity .25s;pointer-events:none;z-index:300;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ══ ACCUEIL ══ -->
+<div class="screen active" id="s-home">
+  <div class="hero">
+    <div class="hero-badge">⚡ Form-Edit · Jeu collectif</div>
+    <h1 class="hero-title">REX<span> Quest</span></h1>
+    <p class="hero-sub">19 questions pour découvrir comment chaque métier construit notre résultat d'exploitation — et notre intéressement.</p>
+    <div class="hero-stats">
+      <div><div class="hstat-n">19</div><div class="hstat-l">Questions</div></div>
+      <div><div class="hstat-n">6</div><div class="hstat-l">Métiers</div></div>
+      <div><div class="hstat-n">⏱</div><div class="hstat-l">20 sec/q</div></div>
+    </div>
+    <button class="btn-primary" onclick="startGame()">C'est parti ! →</button>
+  </div>
+
+  <div class="qr-bloc">
+    <div class="qr-title">📱 Jouez sur votre téléphone</div>
+    <img class="qr-img" id="qr-img" src="" alt="QR Code">
+    <div class="qr-url" id="qr-url">Chargement…</div>
+    <div class="qr-note">Scannez avec l'appareil photo de votre téléphone</div>
+  </div>
+
+  <div class="how">
+    <div class="how-row">
+      <span class="how-ico">❓</span>
+      <div><div class="how-title">18 questions sur 6 métiers</div><div class="how-txt">Présidence, Compta/RH, Service Formation, Commercial, Formateurs, Magasiniers — dans l'ordre.</div></div>
+    </div>
+    <div class="how-row">
+      <span class="how-ico">⚡</span>
+      <div><div class="how-title">20 secondes par question</div><div class="how-txt">Répondez vite : +50 pts bonus si vous répondez en moins de 8 secondes.</div></div>
+    </div>
+    <div class="how-row">
+      <span class="how-ico">🎯</span>
+      <div><div class="how-title">Question finale collective</div><div class="how-txt">Une dernière question pour toute l'équipe, qui vaut 150 pts.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="screen" id="s-quiz">
+  <div class="hdr">
+    <div class="hdr-ico">💰</div>
+    <div class="hdr-info"><div class="hdr-title">REX Quest</div><div class="hdr-sub">Form-Edit</div></div>
+    <div class="hdr-right"><div class="hdr-pts" id="hdr-pts">0</div><div class="hdr-lbl">pts</div></div>
+  </div>
+  <div class="quiz-top">
+    <div class="quiz-meta">
+      <span class="quiz-badge" id="q-badge">Métier</span>
+      <span class="quiz-prog" id="q-prog">1 / 18</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="q-progbar" style="width:0%"></div></div>
+  </div>
+  <div class="dots-row" id="dots-row"></div>
+  <div class="timer-row">
+    <span style="font-size:14px">⏱</span>
+    <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+    <span class="timer-txt" id="timer-txt">20</span>
+  </div>
+  <div class="q-card">
+    <div class="q-metier" id="q-metier"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="q-opts" id="q-opts"></div>
+  </div>
+  <div class="feedback" id="feedback"></div>
+  <div class="next-wrap">
+    <button class="next-btn" id="next-btn" onclick="nextQ()">Question suivante →</button>
+  </div>
+</div>
+
+<!-- ══ QUESTION FINALE ══ -->
+<div class="screen" id="s-finale">
+  <div class="finale-hero">
+    <h2>🎯 Question finale</h2>
+    <p>Qui contribue au résultat d'exploitation de Form-Edit ?</p>
+  </div>
+  <div class="finale-opts" id="finale-opts"></div>
+  <div class="finale-expl" id="finale-expl">
+    <div class="finale-expl-title">✅ La réponse : Toute l'entreprise !</div>
+    <p class="finale-expl-txt">Chaque décision prise au quotidien peut augmenter les revenus, réduire les coûts, fidéliser un client ou éviter une erreur. Le résultat d'exploitation est construit par l'ensemble des équipes.</p>
+    <button class="btn-primary" onclick="showResults()">🏆 Voir mon score →</button>
+  </div>
+</div>
+
+<!-- ══ RÉSULTATS ══ -->
+<div class="screen" id="s-results">
+  <div class="podium-hero">
+    <h2>Résultats 🏆</h2>
+    <p>REX Quest · Form-Edit</p>
+    <div class="score-ring">
+      <span class="score-n" id="final-pts">0</span>
+      <span class="score-lbl">pts</span>
+    </div>
+    <div class="score-title" id="final-title"></div>
+    <div class="score-sub" id="final-sub"></div>
+  </div>
+  <div class="recap">
+    <div class="recap-card" id="recap-list"></div>
+    <div class="msg-card">
+      <p>"Le résultat d'exploitation, c'est nous tous. Chaque geste quotidien — vendre, former, livrer, facturer — le construit ou le fragilise. Et c'est lui qui détermine notre intéressement."</p>
+    </div>
+    <button class="btn-primary" onclick="restartGame()" style="margin-bottom:16px">🔄 Rejouer</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// QR CODE — généré dynamiquement
+// ════════════════════════════════════════
+(function(){
+  // URL actuelle de la page (fonctionne en local ET en ligne)
+  const url = window.location.href.split('?')[0];
+  document.getElementById('qr-url').textContent = 'form-edit.github.io/rex-quest';
+
+  // Génération QR via API publique (fonctionne sans installation)
+  const apiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(url);
+  const img = document.getElementById('qr-img');
+  img.src = 'data:image/png;base64,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';
+  img.onerror = function(){
+    // Fallback si pas de réseau : afficher l'URL
+    img.style.display='none';
+    document.getElementById('qr-url').innerHTML = '<strong>Partagez ce lien :</strong><br>' + url;
+  };
+})();
+
+// ════════════════════════════════════════
+// DONNÉES QUESTIONS
+// ════════════════════════════════════════
+const ALL_QUESTIONS = [
+  // Président (3)
+  { metier:'👔 Président', q:"Le président présente chaque mois les résultats de l'entreprise à tous les salariés.",
+    o:["Cela ne change rien.","Cela augmente automatiquement les charges.","Cela peut améliorer le résultat d'exploitation en aidant chacun à prendre de meilleures décisions.","Cela fait baisser les ventes."],
+    a:2, e:"Quand chacun comprend les objectifs de l'entreprise, il prend plus facilement les bonnes décisions au quotidien." },
+  { metier:'👔 Président', q:"Le président investit dans un logiciel qui fait gagner du temps aux équipes administratives.",
+    o:["C'est uniquement une dépense.","Cela fait baisser les ventes.","C'est un investissement qui améliore l'organisation et peut améliorer le résultat d'exploitation.","Aucun impact."],
+    a:2, e:"Un bon outil permet de gagner du temps, de limiter les erreurs et de se concentrer sur des tâches qui créent de la valeur." },
+  { metier:'👔 Président', q:"Form-Edit développe une nouvelle offre de formation sur mesure.",
+    o:["Cela réduit les revenus.","Cela permet souvent de vendre davantage pour un coût proche et améliore le résultat d'exploitation.","Cela augmente forcément les charges.","Aucun impact."],
+    a:1, e:"Une offre adaptée aux besoins des clients permet de développer l'activité." },
+
+  // Compta / RH (3)
+  { metier:'💼 Comptabilité', q:"Les factures clients sont envoyées avec trois semaines de retard.",
+    o:["Aucun impact.","L'entreprise est payée plus tard, ce qui peut dégrader le résultat d'exploitation.","Les charges diminuent.","Les clients paient plus vite."],
+    a:1, e:"Être payé plus tard peut créer des difficultés de trésorerie et augmenter les risques de litige." },
+  { metier:'💼 RH', q:"Les RH mettent en place un parcours d'intégration pour les nouveaux salariés.",
+    o:["C'est un coût inutile.","Les nouveaux salariés deviennent plus vite autonomes et cela améliore le résultat d'exploitation.","Aucun impact.","Les ventes diminuent."],
+    a:1, e:"Un salarié bien intégré est rapidement efficace et reste plus longtemps dans l'entreprise." },
+  { metier:'💼 Service Formation', q:"Un dossier de formation est refusé par un organisme collecteur car il est incomplet.",
+    o:["Aucun impact.","L'entreprise perd un financement prévu : le résultat d'exploitation baisse.","Les revenus augmentent.","Les charges diminuent."],
+    a:1, e:"Une simple erreur administrative peut coûter plusieurs milliers d'euros." },
+
+  // Service Formation (3)
+  { metier:'📋 Service Formation', q:"Le service formation propose une formation complémentaire adaptée au client.",
+    o:["Cela fait perdre du temps.","Cela augmente les ventes et améliore le résultat d'exploitation.","Cela augmente uniquement les charges.","Aucun impact."],
+    a:1, e:"Une vente complémentaire rapporte souvent beaucoup pour très peu de coût supplémentaire." },
+  { metier:'📋 Service Formation', q:"Une session est remplie en avance avec 10 stagiaires.",
+    o:["Qu'il y ait 1 ou 10 stagiaires, ça ne change rien.","Le coût du formateur est réparti entre davantage de stagiaires : le résultat d'exploitation s'améliore.","Les charges augmentent.","Aucun impact."],
+    a:1, e:"Une session bien remplie est plus rentable." },
+  { metier:'📋 Service Formation', q:"Une session est annulée 48 heures avant son démarrage.",
+    o:["Aucun coût.","Le formateur est payé mais il n'y a pas de chiffre d'affaires : le résultat d'exploitation baisse.","Les revenus augmentent.","Aucun impact."],
+    a:1, e:"Une annulation tardive coûte très cher." },
+
+  // Commercial (2)
+  { metier:'📣 Commercial', q:"Le service commercial valide un devis sans vérifier les stocks.",
+    o:["Aucun risque.","Cela peut provoquer une annulation et des coûts supplémentaires.","Les ventes augmentent.","Aucun impact."],
+    a:1, e:"Une mauvaise coordination coûte du temps, de l'argent et peut décevoir le client." },
+  { metier:'📣 Commercial', q:"Le service commercial accorde 25 % de remise sans validation.",
+    o:["C'est toujours une bonne affaire.","L'entreprise vend mais gagne beaucoup moins sur cette vente.","Les charges diminuent.","Aucun impact."],
+    a:1, e:"Le chiffre d'affaires est important, mais la rentabilité l'est tout autant." },
+
+  // Formateurs (4)
+  { metier:'🎓 Formateurs', q:"Les nouveautés réglementaires sont mises à jour avant les concurrents.",
+    o:["Travail inutile.","Cela attire les clients et améliore le résultat d'exploitation.","Les charges explosent.","Aucun impact."],
+    a:1, e:"Être réactif est un avantage concurrentiel." },
+  { metier:'🎓 Formateurs', q:"Les stagiaires donnent une note de 9,8/10 à un formateur.",
+    o:["Aucun impact.","Les clients reviennent plus facilement et recommandent Form-Edit.","Les charges augmentent.","Les ventes baissent."],
+    a:1, e:"Un client satisfait est souvent un client fidèle." },
+  { metier:'🎓 Formateurs', q:"Le formateur met immédiatement ses supports à jour.",
+    o:["Travail inutile.","Il évite les erreurs et protège le résultat d'exploitation.","Les coûts explosent.","Aucun impact."],
+    a:1, e:"La qualité protège les clients et la réputation de Form-Edit." },
+
+  // Magasiniers (3)
+  { metier:'📦 Magasiniers', q:"Une commande part avec une mauvaise référence.",
+    o:["Aucun impact.","Il faut renvoyer une commande : cela coûte de l'argent.","Les ventes augmentent.","Les charges baissent."],
+    a:1, e:"Une erreur logistique génère des frais de transport, du temps perdu et un client mécontent." },
+  { metier:'📦 Magasiniers', q:"Un produit est envoyé 1 semaine après la commande.",
+    o:["Ce n'est pas grave.","L'entreprise peut perdre la vente et parfois le client.","Les revenus augmentent.","Les charges baissent."],
+    a:1, e:"Un client peut aller chez un concurrent s'il n'est pas satisfait du service." },
+  { metier:'📦 Magasiniers', q:"Le magasinier contrôle chaque réception.",
+    o:["Cela fait perdre du temps.","Cela évite des erreurs coûteuses et améliore le résultat d'exploitation.","Les charges augmentent.","Aucun impact."],
+    a:1, e:"Détecter une erreur dès la réception coûte beaucoup moins cher que la corriger après." },
+];
+
+const TOTAL = ALL_QUESTIONS.length; // 17 questions + 1 finale
+const FINALE_OPTS = ["Le Président","Les commerciaux","Les formateurs","La Comptabilité / RH","Les magasiniers","Toute l'entreprise ✅"];
+const FINALE_OK = 5;
+
+// ════════════════════════════════════════
+// ÉTAT
+// ════════════════════════════════════════
+let qIndex = 0, score = 0, results = [], answered = false, timer = null, timeLeft = 20;
+const MAX_T = 20, PTS = 100, PTS_SPEED = 50;
+
+// ════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════
+function show(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startGame(){
+  qIndex=0; score=0; results=[]; answered=false;
+  show('s-quiz');
+  renderQuestion();
+}
+
+function restartGame(){
+  show('s-home');
+}
+
+// ════════════════════════════════════════
+// QUESTION
+// ════════════════════════════════════════
+function renderQuestion(){
+  const q = ALL_QUESTIONS[qIndex];
+  answered = false;
+
+  // Barre progression
+  document.getElementById('q-progbar').style.width = (qIndex / TOTAL * 100) + '%';
+  document.getElementById('q-prog').textContent = (qIndex+1) + ' / ' + TOTAL;
+  document.getElementById('q-badge').textContent = q.metier;
+  document.getElementById('q-metier').textContent = q.metier;
+  document.getElementById('q-text').textContent = q.q;
+
+  // Dots
+  document.getElementById('dots-row').innerHTML = ALL_QUESTIONS.map((_,i) => {
+    let cls = 'dot';
+    if(i < results.length) cls += results[i] ? ' ok' : ' ko';
+    else if(i === qIndex) cls += ' cur';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+
+  // Options
+  const letters = ['A','B','C','D'];
+  document.getElementById('q-opts').innerHTML = q.o.map((o,i) =>
+    `<button class="opt-btn" onclick="answer(${i})">${letters[i]}. ${o}</button>`
+  ).join('');
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('next-btn').className = 'next-btn';
+  document.getElementById('next-btn').textContent = qIndex < TOTAL-1 ? 'Question suivante →' : 'Question finale →';
+  document.getElementById('hdr-pts').textContent = score;
+
+  startTimer();
+}
+
+function startTimer(){
+  clearTimer();
+  timeLeft = MAX_T;
+  updateTimer();
+  timer = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if(timeLeft <= 0){ clearTimer(); if(!answered) timeout(); }
+  }, 1000);
+}
+
+function updateTimer(){
+  document.getElementById('timer-txt').textContent = timeLeft;
+  document.getElementById('timer-fill').style.width = (timeLeft / MAX_T * 100) + '%';
+  document.getElementById('timer-fill').style.background = timeLeft <= 5 ? '#c0392b' : 'var(--gold)';
+}
+
+function clearTimer(){ if(timer){ clearInterval(timer); timer = null; } }
+
+function timeout(){
+  if(answered) return;
+  answered = true;
+  const q = ALL_QUESTIONS[qIndex];
+  document.querySelectorAll('.opt-btn').forEach((b,i) => { b.disabled=true; if(i===q.a) b.classList.add('reveal'); });
+  const fb = document.getElementById('feedback');
+  fb.innerHTML = '⏰ <strong>Temps écoulé !</strong> ' + q.e;
+  fb.className = 'feedback show';
+  results.push(false);
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function answer(chosen){
+  if(answered) return;
+  clearTimer();
+  answered = true;
+  const q = ALL_QUESTIONS[qIndex];
+  const ok = chosen === q.a;
+  let pts = 0;
+  if(ok){ pts = PTS + (timeLeft > MAX_T-8 ? PTS_SPEED : 0); score += pts; }
+  results.push(ok);
+
+  document.querySelectorAll('.opt-btn').forEach((b,i) => {
+    b.disabled = true;
+    if(i === q.a) b.classList.add('correct');
+    else if(i === chosen && !ok) b.classList.add('wrong');
+  });
+
+  const speed = ok && timeLeft > MAX_T-8 ? ' ⚡ +50 bonus !' : '';
+  const fb = document.getElementById('feedback');
+  fb.innerHTML = (ok ? `✅ <strong>+${pts} pts${speed}</strong><br>` : '❌ <strong>Pas tout à fait.</strong><br>') + q.e;
+  fb.className = 'feedback show';
+  if(ok) toast('+' + pts + ' pts 💰');
+
+  document.getElementById('next-btn').className = 'next-btn show';
+  document.getElementById('hdr-pts').textContent = score;
+}
+
+function nextQ(){
+  clearTimer();
+  qIndex++;
+  if(qIndex < TOTAL) renderQuestion();
+  else showFinale();
+}
+
+// ════════════════════════════════════════
+// QUESTION FINALE
+// ════════════════════════════════════════
+function showFinale(){
+  show('s-finale');
+  document.getElementById('finale-opts').innerHTML = FINALE_OPTS.map((o,i) =>
+    `<button class="fo-btn" onclick="ansFinale(${i})">${o}</button>`
+  ).join('');
+}
+
+function ansFinale(chosen){
+  document.querySelectorAll('.fo-btn').forEach((b,i) => {
+    b.disabled = true;
+    if(i === FINALE_OK) b.classList.add('ok');
+    else if(i === chosen && chosen !== FINALE_OK) b.classList.add('ko');
+  });
+  if(chosen === FINALE_OK){ score += 150; toast('+150 pts 🎉'); }
+  document.getElementById('finale-expl').className = 'finale-expl show';
+}
+
+// ════════════════════════════════════════
+// RÉSULTATS
+// ════════════════════════════════════════
+function showResults(){
+  show('s-results');
+  document.getElementById('final-pts').textContent = score;
+  const pct = Math.round(results.filter(Boolean).length / TOTAL * 100);
+  const titles = ['Participez encore !','Bonne base !','Bien joué !','Expert REX ! 🏆'];
+  const subs = [
+    'L'essentiel est d'avoir joué — relisez les explications.',
+    'Vous commencez à voir les mécanismes. Continuez !',
+    'Vous maîtrisez l'impact de votre métier sur le REX.',
+    'Vous comprenez parfaitement comment Form-Edit construit son résultat.',
+  ];
+  const idx = pct >= 90 ? 3 : pct >= 70 ? 2 : pct >= 50 ? 1 : 0;
+  document.getElementById('final-title').textContent = titles[idx];
+  document.getElementById('final-sub').textContent = pct + '% de bonnes réponses · ' + score + ' pts';
+
+  // Récap par métier
+  let recapHtml = '';
+  let mIdx = 0;
+  const metierGroups = [
+    { name:'Président', ico:'👔', count:3 },
+    { name:'Compta / RH', ico:'💼', count:3 },
+    { name:'Service Formation', ico:'📋', count:3 },
+    { name:'Commercial', ico:'📣', count:2 },
+    { name:'Formateurs', ico:'🎓', count:3 },
+    { name:'Magasiniers', ico:'📦', count:3 },
+  ];
+  metierGroups.forEach(m => {
+    const mResults = results.slice(mIdx, mIdx + m.count);
+    const mPts = mResults.reduce((acc, ok, i) => {
+      if(!ok) return acc;
+      return acc + PTS; // approximatif (sans bonus vitesse)
+    }, 0);
+    const dots = mResults.map(r => `<div class="rdot ${r?'ok':'ko'}"></div>`).join('');
+    recapHtml += `<div class="recap-row">
+      <span class="recap-ico">${m.ico}</span>
+      <span class="recap-name">${m.name}</span>
+      <div class="recap-dots">${dots}</div>
+    </div>`;
+    mIdx += m.count;
+  });
+  document.getElementById('recap-list').innerHTML = recapHtml;
+}
+
+// ════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════
+let toastT;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 1800);
+}
+</script>
+</body>
+</html>
